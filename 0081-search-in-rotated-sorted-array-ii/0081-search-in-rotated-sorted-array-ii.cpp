@@ -1,32 +1,33 @@
 class Solution {
 public:
     bool search(vector<int>& nums, int target) {
-        int n=nums.size();
-        int lo=0;
-        int hi=n-1;
-        while(lo<=hi)
-        {
-            int mid=lo+(hi-lo)/2;
-            if(nums[mid]==target)
-            return true;
-             if (nums[lo] == nums[mid]) {
-                lo++;
-                continue;
-            }
+        int left = 0, right = nums.size() - 1;
 
-            if(nums[lo]<=nums[mid])
-            {
-                if(nums[lo]<=target && target<=nums[mid])
-                hi=mid-1;
-                else
-                lo=mid+1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (nums[mid] == target) return true;
+
+            // Ambiguous case: can't determine which half is sorted
+            if (nums[left] == nums[mid] && nums[mid] == nums[right]) {
+                left++;
+                right--;
             }
-            else
-            {
-                if(nums[mid]<=target && target<=nums[hi])
-                lo=mid+1;
-                else
-                hi=mid-1;
+            // Left half is sorted
+            else if (nums[left] <= nums[mid]) {
+                if (target >= nums[left] && target < nums[mid]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            }
+            // Right half is sorted
+            else {
+                if (target > nums[mid] && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
             }
         }
         return false;
